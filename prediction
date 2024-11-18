@@ -1,0 +1,23 @@
+@author:NIDHIN MS
+"""
+
+import yfinance as yf
+from sklearn.linear_model import LinearRegression
+
+# Fetch historical data for a particular equity
+equity_symbol = 'SBIN.NS'
+equity_data = yf.download(equity_symbol, period='max')
+
+# Prepare the data for the machine learning algorithm
+X = equity_data['Close'].values[:-1].reshape(-1, 1)
+y = equity_data['Close'].values[1:].reshape(-1, 1)
+
+# Train a linear regression model on the historical data
+model = LinearRegression()
+model.fit(X, y)
+
+# Make a prediction for the next day's closing price
+last_close_price = equity_data['Close'].iloc[-1]
+next_close_price = model.predict([[last_close_price]])[0][0]
+
+print(f"Predicted close price for {equity_symbol} tomorrow: {next_close_price:.2f}")
